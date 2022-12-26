@@ -1,0 +1,30 @@
+# версия compose
+version: '3.1'
+
+# образы, которые будут подключаться
+services:
+  php: 
+    # путь до Dockerfile
+    build: ./php
+    # 80 - port c Dockerfile
+    ports:
+      - 8081:80
+
+  db:
+    # образ
+    image: mysql
+    # если сервер упал, то будет перезапускаться (если вместо always прописать no - то не будет)
+    restart: always
+    # команда выполняется каждый раз при запуске образа (аналог CMD в Dockerfile)
+    command: --default-authentication-plugin=mysql_native_password
+    # виртуальные переменные, настройки при работе с самим образом (логин, пароль и т.д.)
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
