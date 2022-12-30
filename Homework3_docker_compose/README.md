@@ -1,4 +1,4 @@
-# Docker-Compose
+# Homework3_Docker_Compose
 
 ### Создаем проект (django - это обращение к сервису)
 ```

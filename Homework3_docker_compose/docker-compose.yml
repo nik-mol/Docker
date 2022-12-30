@@ -1,0 +1,51 @@
+# версия compose
+version: '3'
+
+# описание сервисов
+services:
+# имя сервиса любое
+  django:
+  # путь к Dockerfile
+    build: .
+    # имя контейнера, который будет создаваться
+    container_name: django
+    # команда при построении самого сервиса "django"
+    command: python manage.py runserver 0.0.0.0:8001
+    # связь текущей папки с рабочей дирректорией
+    volumes:
+      - .:/usr/src/app
+    # соединение портов
+    ports:
+      - "8000:8001"
+    # данный сервис зависит от сервиса "pgdb"
+    depends_on:
+      - pgdb
+  
+  pgdb:
+    # подключение изображения
+    image: postgres
+    # переменные
+    environment:
+      # имя БД
+      - POSTGRES_DB=postgres
+      # пользователь
+      - POSTGRES_USER=postgres 
+      # пароль
+      - POSTGRES_PASSWORD=310585
+    container_name: pgdb
+    # связь папки проекта "pgdbdata" (любое имя) с папкой на сервере "/var/lib/postgresql/data" (для сохранения настроек)
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx
+    volumes:
+      - nginx.conf:/etc/nginx/nginx.conf
+    command: [nginx-debug, '-g', 'daemon off;'] 
+    ports:
+      - "8080:80"
+
+# указываем, что есть папка "pgdbdata" и файл nginx.conf
+volumes:
+  pgdbdata: null
+  nginx.conf: null
